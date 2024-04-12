@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 
 const Nav = () => {
   const [providers, setProviders] = useState<unknown | null>(null);
+  const [toggleMenu, setToggleMenu] = useState<boolean>(false);
+  const { data: session, status } = useSession();
   const isLoggedin = true;
   useEffect(() => {
     async function fetchProviders() {
@@ -16,6 +18,8 @@ const Nav = () => {
     }
     fetchProviders();
   }, []);
+
+  console.log(session);
   return (
     <nav className="mb-16 pt-3 flex justify-between w-full">
       <Link href="/" className="flex gap-2 justify-center items-center">
@@ -31,7 +35,7 @@ const Nav = () => {
 
       {/* desktop nav */}
       <div className="sm:flex hidden">
-        {isLoggedin ? (
+        {session?.user ? (
           <div className="flex gap-3 sm:gap-5">
             <Link href="/create-prompt" className="black_btn">
               Create Post
@@ -49,7 +53,7 @@ const Nav = () => {
               alt="Profile"
               height={37}
               width={37}
-              src="/assets/images/logo.svg"
+              src={session?.user?.image || "/assets/images/logo.svg"}
               className="rounded-full"
             />
           </div>
@@ -72,16 +76,45 @@ const Nav = () => {
 
       {/* mobile nav */}
       <div className="sm:hidden flex relative">
-        {isLoggedin ? (
+        {session?.user ? (
           <div className="flex">
             <Image
               alt="Profile"
               height={37}
               width={37}
-              src="/assets/images/logo.svg"
+              src={session?.user?.image || "/assets/images/logo.svg"}
               className="rounded-full"
-              onClick={() => {}}
+              onClick={() => setToggleMenu((prev) => !prev)}
             />
+
+            {toggleMenu && (
+              <div className="dropdown">
+                <Link
+                  href="/profile"
+                  className="dropdown_link"
+                  onClick={() => setToggleMenu((prev) => !prev)}
+                >
+                  My Profile
+                </Link>
+                <Link
+                  href="/create-prompt"
+                  className="dropdown_link"
+                  onClick={() => setToggleMenu((prev) => !prev)}
+                >
+                  Create Prompt
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setToggleMenu(false);
+                    signOut();
+                  }}
+                  className="mt-5 w-full black_btn"
+                >
+                  Sign out
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <>

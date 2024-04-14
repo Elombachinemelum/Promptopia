@@ -15,28 +15,25 @@ const handler: typeof NextAuth = NextAuth({
   callbacks: {
     async session({ session, token, user }) {
       // we just need to update the sessions object to the signed in users details
-      //   console.log(token, "token");
-      const existingUser = User.findOne({ email: session.user?.email });
-      console.log(existingUser["_id" as keyof typeof existingUser], "user id");
+      const [existingUser] = await User.find({ email: session.user?.email });
       session.user!["id" as keyof typeof session.user] =
-        token.jti?.toString() as never;
+        existingUser._id?.toString() as never;
       return session;
     },
     async signIn({ profile, email }) {
       // once sign in occures we then need to add the user to our db if it's a first time user
       // Or just update session if this is a returning user.
       // but we need to connect to the db to read and write to it....
+
       await connectToDB();
-      const existingUser = User.findOne({
+      const existingUser = await User.exists({
         email: profile?.email,
       });
-      console.log(existingUser, "existing user");
       if (!existingUser) {
-        console.log("adding user to collection");
         await User.create({
           email: profile?.email,
           username: profile?.name?.replace(/ /gi, "")?.toLowerCase(),
-          image: profile?.image,
+          image: profile?.["picture" as keyof typeof profile],
         });
       }
       return true;

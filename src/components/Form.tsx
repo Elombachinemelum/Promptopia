@@ -1,5 +1,7 @@
+"use client";
 import { Post } from "@/utils/types";
 import Link from "next/link";
+import { ChangeEvent } from "react";
 
 const Form = ({
   type,
@@ -12,7 +14,8 @@ const Form = ({
   post: Post;
   setPost: React.Dispatch<React.SetStateAction<Post>>;
   submitting: boolean;
-  handleSubmit: () => Promise<void>;
+  setSubmitting?: React.Dispatch<React.SetStateAction<boolean>>;
+  handleSubmit: (e: ChangeEvent<HTMLFormElement>) => Promise<void>;
 }) => {
   return (
     <section className="w-full max-w-full flex flex-col justify-start">
@@ -25,7 +28,7 @@ const Form = ({
       </p>
 
       <form
-        action={handleSubmit}
+        onSubmit={handleSubmit}
         className="mt-10 w-full max-w-2xl flex flex-col gap-7 glassmorphism"
       >
         <label

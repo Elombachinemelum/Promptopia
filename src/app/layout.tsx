@@ -29,7 +29,7 @@ export default function RootLayout({
 
           <main className="app">
             <Nav />
-            {children}
+            <div className="mt-[50px]">{children}</div>
           </main>
         </Provider>
       </body>

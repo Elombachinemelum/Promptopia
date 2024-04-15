@@ -71,6 +71,25 @@ export async function fetchUserPrompts(userId: string) {
   }
 }
 
+export async function fetchUserDetails(userId: string) {
+  try {
+    const data = await axios.get(
+      BaseUrl.local + `/api/users/${userId}/details`
+    );
+    return {
+      error: false,
+      data: data.status === 404 ? null : data.data,
+      message: data.status === 404 ? data.data.message : "Success",
+    };
+  } catch (error: any) {
+    return {
+      error: true,
+      message: error.response?.data?.message || error.message,
+      data: null,
+    };
+  }
+}
+
 export async function fetchPrompt(userId: string) {
   try {
     const data = await axios.get(BaseUrl.local + `/api/prompt/${userId}`);

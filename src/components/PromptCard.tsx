@@ -4,15 +4,17 @@ import { useState } from "react";
 import copy from "../../public/assets/icons/copy.svg";
 import tick from "../../public/assets/icons/tick.svg";
 import { useSession } from "next-auth/react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const PromptCard = ({
   post,
   handleTagClick,
   handleEdit,
   handleDelete,
+  userProfileId,
 }: {
   post: Prompts;
+  userProfileId?: string | null;
   handleTagClick?: (e: string) => void;
   handleEdit?: (e: string) => void;
   handleDelete?: (e: string) => void;
@@ -20,6 +22,8 @@ const PromptCard = ({
   const [copied, setCopied] = useState<string>("");
   const { data: session } = useSession();
   const pathname = usePathname();
+  const router = useRouter();
+  console.log(post);
   return (
     <div className="prompt_card">
       <div className="flex justify-between items-start gap-5">
@@ -29,7 +33,8 @@ const PromptCard = ({
             alt="user_image"
             width={40}
             height={40}
-            className="rounded-full object-contain"
+            className="rounded-full object-contain cursor-pointer"
+            onClick={() => router.push(`/profile?id=${post.creator?._id}`)}
           />
 
           <div className="flex flex-col">
@@ -68,22 +73,24 @@ const PromptCard = ({
         {post.tag?.slice(0, 1) === "#" ? `${post.tag}` : `#${post.tag}`}
       </p>
 
-      {session?.user && pathname === "/profile" && (
-        <div className="flex justify-end gap-2 mt-3">
-          <p
-            className="font-inter text-sm green_gradient cursor-pointer"
-            onClick={() => handleEdit?.(post._id!)}
-          >
-            Edit
-          </p>
-          <p
-            className="font-inter text-sm orange_gradient cursor-pointer"
-            onClick={() => handleDelete?.(post._id!)}
-          >
-            Delete
-          </p>
-        </div>
-      )}
+      {session?.user &&
+        pathname === "/profile" &&
+        session?.user!["id" as keyof typeof session.user] === userProfileId && (
+          <div className="flex justify-end gap-2 mt-3">
+            <p
+              className="font-inter text-sm green_gradient cursor-pointer"
+              onClick={() => handleEdit?.(post._id!)}
+            >
+              Edit
+            </p>
+            <p
+              className="font-inter text-sm orange_gradient cursor-pointer"
+              onClick={() => handleDelete?.(post._id!)}
+            >
+              Delete
+            </p>
+          </div>
+        )}
     </div>
   );
 };

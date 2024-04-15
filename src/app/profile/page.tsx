@@ -1,13 +1,20 @@
 "use client";
 import UserProfile from "@/components/UserProfile";
-import { deletePrompt, fetchUserPrompts } from "@/utils/serverActions";
+import {
+  deletePrompt,
+  fetchUserDetails,
+  fetchUserPrompts,
+} from "@/utils/serverActions";
 import { Prompts } from "@/utils/types";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const Profile = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [userEmail, setUserEmail] = useState<string>("");
+  const id = searchParams.get("id");
 
   const handleEdit = (id: string) => {
     router.push(`/update-prompt?id=${id}`);
@@ -32,26 +39,38 @@ const Profile = () => {
   const { data: session } = useSession();
 
   async function getUSerPosts() {
-    const response = await fetchUserPrompts(
-      session?.user!["id" as keyof typeof session.user]!
-    );
+    const response = await fetchUserPrompts(id!);
 
     if (!response.error) {
       setPrompts(response.data);
     } else console.error(response.error);
   }
 
-  console.log(prompts);
+  async function getUserProfileDetails() {
+    try {
+      const userDetails = await fetchUserDetails(id as string);
+      if (userDetails.data.username) {
+        setUserEmail(userDetails.data.username);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   useEffect(() => {
     if (session?.user) {
       getUSerPosts();
+
+      if (id && session?.user!["id" as keyof typeof session.user] !== id) {
+        getUserProfileDetails();
+      }
     }
   }, [session]);
 
   return (
     <UserProfile
-      name="My"
+      userProfileId={id}
+      name={userEmail || "My"}
       desc="Welcome to your personalised profile page"
       data={prompts}
       handleEdit={handleEdit}

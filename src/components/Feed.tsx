@@ -41,7 +41,7 @@ const Feed = () => {
   }, []);
 
   return (
-    <section className="feed">
+    <section className="feed mb-10">
       <form action="" className="relative w-full justify-center">
         <input
           type="text"

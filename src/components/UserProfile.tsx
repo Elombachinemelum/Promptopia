@@ -6,18 +6,22 @@ const UserProfile = ({
   name,
   desc,
   data,
+  userProfileId,
   handleEdit,
   handleDelete,
 }: {
   name: string;
   desc: string;
+  userProfileId: string | null;
   data: Prompts[];
   handleEdit: (id: string) => void;
   handleDelete: (id: string) => Promise<void>;
 }) => {
   return (
     <section className="w-full">
-      <h1 className="text-left head_text blue_gradient">{name} profile</h1>
+      <h1 className="text-left head_text blue_gradient user_profile">
+        {name} profile
+      </h1>
       <p className="desc text-left">{desc}</p>
 
       <div className="mt-10 prompt_layout">
@@ -25,7 +29,7 @@ const UserProfile = ({
           <PromptCard
             key={idx}
             post={prompt}
-            {...{ handleDelete, handleEdit }}
+            {...{ handleDelete, handleEdit, userProfileId }}
           />
         ))}
       </div>

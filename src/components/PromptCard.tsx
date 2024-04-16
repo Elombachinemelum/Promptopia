@@ -23,7 +23,6 @@ const PromptCard = ({
   const { data: session } = useSession();
   const pathname = usePathname();
   const router = useRouter();
-  console.log(post);
   return (
     <div className="prompt_card">
       <div className="flex justify-between items-start gap-5">

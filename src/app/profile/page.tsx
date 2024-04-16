@@ -6,14 +6,21 @@ import {
   fetchUserPrompts,
 } from "@/utils/serverActions";
 import { Prompts } from "@/utils/types";
+import { Metadata } from "next";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+
+// export const metadata: Metadata = {
+//   title: "Profile",
+//   description: "View user's personal posts",
+// };
 
 const Profile = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [userEmail, setUserEmail] = useState<string>("");
+  const [loadingProfile, setLoadingProfile] = useState<boolean>(false);
   const id = searchParams.get("id");
 
   const handleEdit = (id: string) => {
@@ -47,6 +54,7 @@ const Profile = () => {
   }
 
   async function getUserProfileDetails() {
+    setLoadingProfile(true);
     try {
       const userDetails = await fetchUserDetails(id as string);
       if (userDetails.data.username) {
@@ -54,6 +62,8 @@ const Profile = () => {
       }
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoadingProfile(false);
     }
   }
 
@@ -65,12 +75,18 @@ const Profile = () => {
         getUserProfileDetails();
       }
     }
-  }, [session]);
+  }, [session, id]);
 
   return (
     <UserProfile
       userProfileId={id}
-      name={userEmail || "My"}
+      name={
+        userEmail && !loadingProfile
+          ? userEmail
+          : !userEmail && loadingProfile
+          ? ""
+          : "My"
+      }
       desc="Welcome to your personalised profile page"
       data={prompts}
       handleEdit={handleEdit}

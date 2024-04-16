@@ -12,7 +12,6 @@ export async function addPromptToDB(data: Prompts) {
   // here we can hit up the API route we are going to create
   //   we can just interact with our db here in the server action but just to show how to goo about creating end points in nextjs
   //   fetch returns data as readable stream and this makes it hard to read so we swtich too axios
-  console.log(data);
   try {
     const response = await axios.post(
       BaseUrl.local + "/api/prompt/new",

@@ -13,13 +13,11 @@ const Nav = () => {
   useEffect(() => {
     async function fetchProviders() {
       const response = await getProviders();
-      console.log(response);
       setProviders(response);
     }
     fetchProviders();
   }, []);
 
-  console.log(session);
   return (
     <nav className="mb-16  flex fixed top-0 right-0 w-full bg-[#fff] z-[500]">
       <div className="pt-3 px-6 mx-auto flex justify-between w-full">

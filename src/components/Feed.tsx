@@ -23,11 +23,39 @@ const PromptCardList = ({
 const Feed = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [prompts, setPrompts] = useState<Prompts[]>([]);
-  const handleSearch = (evt: ChangeEvent<HTMLInputElement>) => {
-    setSearchText(evt.target.value);
+  const [searchedPrompts, setSearchedPrompts] = useState<Prompts[]>([]);
+  const [prevTimeoutId, setPrevTimeoutId] = useState<NodeJS.Timeout | null>(
+    null
+  );
+
+  const filterPrompts = (search: string) => {
+    const regEx = new RegExp(search, "gi");
+    const filteredPrompts = prompts?.filter(
+      (prompt) =>
+        regEx.test(prompt.prompt) ||
+        regEx.test(prompt.tag) ||
+        regEx.test(prompt.creator?.username!)
+    );
+    return filteredPrompts;
   };
 
-  const handleTagClick = (tag: string) => {};
+  const handleSearch = (evt: ChangeEvent<HTMLInputElement>) => {
+    clearTimeout(prevTimeoutId!);
+    setSearchText(evt.target.value);
+
+    setPrevTimeoutId(
+      setTimeout(() => {
+        const result = filterPrompts(evt.target.value);
+        setSearchedPrompts(result);
+      }, 500)
+    );
+  };
+
+  const handleTagClick = (tag: string) => {
+    setSearchText(tag);
+    const result = filterPrompts(tag);
+    setSearchedPrompts(result);
+  };
 
   const getPrompts = async () => {
     const response = await fetchPrompts();
@@ -53,7 +81,10 @@ const Feed = () => {
         />
       </form>
 
-      <PromptCardList data={prompts} handleTagClick={handleTagClick} />
+      <PromptCardList
+        data={searchedPrompts[0] ? searchedPrompts : prompts}
+        handleTagClick={handleTagClick}
+      />
     </section>
   );
 };

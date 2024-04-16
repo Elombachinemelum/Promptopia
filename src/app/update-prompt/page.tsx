@@ -26,7 +26,6 @@ const UpdatePrompt = () => {
       const getPrompt = async () => {
         const res = await fetchPrompt(promptId);
         setPost(res.data);
-        console.log(res);
       };
       getPrompt();
     }

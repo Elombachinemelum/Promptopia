@@ -27,14 +27,16 @@ const PromptCard = ({
   return (
     <div className="prompt_card">
       <div className="flex justify-between items-start gap-5">
-        <div className="flex flex-1 justify-start items-center gap-3 cursor-pointer">
+        <div
+          className="flex flex-1 justify-start items-center gap-3 cursor-pointer"
+          onClick={() => router.push(`/profile?id=${post.creator?._id}`)}
+        >
           <Image
             src={post?.creator?.image ?? ""}
             alt="user_image"
             width={40}
             height={40}
             className="rounded-full object-contain cursor-pointer"
-            onClick={() => router.push(`/profile?id=${post.creator?._id}`)}
           />
 
           <div className="flex flex-col">

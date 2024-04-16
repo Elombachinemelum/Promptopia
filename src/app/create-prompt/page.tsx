@@ -17,7 +17,6 @@ const CreatePrompt = () => {
   useEffect(() => {
     if (status === "unauthenticated") router.push("/");
   }, [status]);
-  console.log({ session });
 
   const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();

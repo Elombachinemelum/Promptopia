@@ -87,7 +87,13 @@ const Profile = () => {
           ? ""
           : "My"
       }
-      desc="Welcome to your personalised profile page"
+      desc={
+        userEmail && !loadingProfile
+          ? `Prompts from ${userEmail}`
+          : !userEmail && loadingProfile
+          ? ""
+          : "Welcome to your personalised profile page"
+      }
       data={prompts}
       handleEdit={handleEdit}
       handleDelete={handleDelete}

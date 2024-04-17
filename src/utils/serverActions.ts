@@ -7,13 +7,13 @@ type bodyType = ReadableStream<Uint8Array> & {
   json: () => Promise<unknown>;
 };
 
-export async function addPromptToDB(data: Prompts) {
+export async function addPromptToDB(origin: string, data: Prompts) {
   // here we can hit up the API route we are going to create
   //   we can just interact with our db here in the server action but just to show how to goo about creating end points in nextjs
   //   fetch returns data as readable stream and this makes it hard to read so we swtich too axios
   try {
     const response = await axios.post(
-      process.env.BASE_URL + "/api/prompt/new",
+      origin + "/api/prompt/new",
       JSON.stringify(data),
       {
         headers: {
@@ -35,9 +35,9 @@ export async function addPromptToDB(data: Prompts) {
   }
 }
 
-export async function fetchPrompts() {
+export async function fetchPrompts(origin: string) {
   try {
-    const data = await axios.get(process.env.BASE_URL + "/api/prompt");
+    const data = await axios.get(origin + "/api/prompt");
     return {
       error: false,
       data: data.data,
@@ -52,11 +52,9 @@ export async function fetchPrompts() {
   }
 }
 
-export async function fetchUserPrompts(userId: string) {
+export async function fetchUserPrompts(origin: string, userId: string) {
   try {
-    const data = await axios.get(
-      process.env.BASE_URL + `/api/users/${userId}/posts`
-    );
+    const data = await axios.get(origin + `/api/users/${userId}/posts`);
     return {
       error: false,
       data: data.data,
@@ -71,11 +69,9 @@ export async function fetchUserPrompts(userId: string) {
   }
 }
 
-export async function fetchUserDetails(userId: string) {
+export async function fetchUserDetails(origin: string, userId: string) {
   try {
-    const data = await axios.get(
-      process.env.BASE_URL + `/api/users/${userId}/details`
-    );
+    const data = await axios.get(origin + `/api/users/${userId}/details`);
     return {
       error: false,
       data: data.status === 404 ? null : data.data,
@@ -90,11 +86,9 @@ export async function fetchUserDetails(userId: string) {
   }
 }
 
-export async function fetchPrompt(userId: string) {
+export async function fetchPrompt(origin: string, userId: string) {
   try {
-    const data = await axios.get(
-      process.env.BASE_URL + `/api/prompt/${userId}`
-    );
+    const data = await axios.get(origin + `/api/prompt/${userId}`);
     return {
       error: false,
       data: data.status === 404 ? null : data.data,
@@ -109,12 +103,13 @@ export async function fetchPrompt(userId: string) {
   }
 }
 
-export async function updatePrompt(id: string, promptData: Partial<Prompts>) {
+export async function updatePrompt(
+  origin: string,
+  id: string,
+  promptData: Partial<Prompts>
+) {
   try {
-    const data = await axios.patch(
-      process.env.BASE_URL + `/api/prompt/${id}`,
-      promptData
-    );
+    const data = await axios.patch(origin + `/api/prompt/${id}`, promptData);
     return {
       error: false,
       data: data.status === 404 ? null : data.data,
@@ -129,11 +124,9 @@ export async function updatePrompt(id: string, promptData: Partial<Prompts>) {
   }
 }
 
-export async function deletePrompt(userId: string) {
+export async function deletePrompt(origin: string, userId: string) {
   try {
-    const data = await axios.delete(
-      process.env.BASE_URL + `/api/prompt/${userId}`
-    );
+    const data = await axios.delete(origin + `/api/prompt/${userId}`);
     return {
       error: false,
       data: data.data,

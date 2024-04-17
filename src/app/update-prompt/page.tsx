@@ -25,7 +25,7 @@ const UpdatePrompt = () => {
   useEffect(() => {
     if (promptId) {
       const getPrompt = async () => {
-        const res = await fetchPrompt(promptId);
+        const res = await fetchPrompt(window.location.origin, promptId);
         setPost(res.data);
       };
       getPrompt();
@@ -36,7 +36,11 @@ const UpdatePrompt = () => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const response = await updatePrompt(promptId!, post);
+      const response = await updatePrompt(
+        window.location.origin,
+        promptId!,
+        post
+      );
       if (!response.error) {
         router.push(
           `/profile?id=${session?.user!["id" as keyof typeof session.user]}`

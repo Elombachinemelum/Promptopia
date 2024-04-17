@@ -32,7 +32,7 @@ const Profile = () => {
     const confirmDelete = confirm("Are you sure you want to delete this post?");
     if (confirmDelete) {
       try {
-        const response = await deletePrompt(id);
+        const response = await deletePrompt(window.location.origin, id);
         if (!response.error) {
           getUSerPosts();
         } else {
@@ -47,7 +47,7 @@ const Profile = () => {
   const { data: session } = useSession();
 
   async function getUSerPosts() {
-    const response = await fetchUserPrompts(id!);
+    const response = await fetchUserPrompts(window.location.origin, id!);
 
     if (!response.error) {
       setPrompts(response.data);
@@ -57,7 +57,10 @@ const Profile = () => {
   async function getUserProfileDetails() {
     setLoadingProfile(true);
     try {
-      const userDetails = await fetchUserDetails(id as string);
+      const userDetails = await fetchUserDetails(
+        window.location.origin,
+        id as string
+      );
       if (userDetails.data.username) {
         setUserEmail(userDetails.data.username);
       }

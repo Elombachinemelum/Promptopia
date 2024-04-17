@@ -3,7 +3,8 @@ import Form from "@/components/Form";
 import { addPromptToDB } from "@/utils/serverActions";
 import { Post } from "@/utils/types";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import path from "path";
 import React, { ChangeEvent, useEffect, useState } from "react";
 
 const CreatePrompt = () => {
@@ -25,7 +26,7 @@ const CreatePrompt = () => {
     // Since we are using the app router, we must not use the api route instead just "Server component" but ofcourse we are in a client
     // component here so that's not possible.
     try {
-      const response = await addPromptToDB({
+      const response = await addPromptToDB(window.location.origin, {
         prompt: post.prompt,
         tag: post.tag,
         userId: session?.user?.["id" as keyof typeof session.user]!,

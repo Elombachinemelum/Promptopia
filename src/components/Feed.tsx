@@ -60,7 +60,7 @@ const Feed = () => {
   };
 
   const getPrompts = async () => {
-    const response = await fetchPrompts();
+    const response = await fetchPrompts(window.location.origin);
     if (!response.error) {
       setPrompts(response.data);
     } else console.error(response.error);

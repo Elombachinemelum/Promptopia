@@ -3,6 +3,7 @@ import { fetchPrompts } from "@/utils/serverActions";
 import { Prompts } from "@/utils/types";
 import { ChangeEvent, useEffect, useState } from "react";
 import PromptCard from "./PromptCard";
+import { useSession } from "next-auth/react";
 
 const PromptCardList = ({
   data,
@@ -27,6 +28,7 @@ const Feed = () => {
   const [prevTimeoutId, setPrevTimeoutId] = useState<NodeJS.Timeout | null>(
     null
   );
+  const { status } = useSession();
 
   const filterPrompts = (search: string) => {
     const regEx = new RegExp(search, "gi");
@@ -68,6 +70,8 @@ const Feed = () => {
     getPrompts();
   }, []);
 
+  if (status === "unauthenticated" || status === "loading")
+    return <p className="desc text-center !mt-7">Sign in to view prompts</p>;
   return (
     <section className="feed mb-10">
       <form action="" className="relative w-full justify-center">

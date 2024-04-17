@@ -22,6 +22,7 @@ const Profile = () => {
   const [userEmail, setUserEmail] = useState<string>("");
   const [loadingProfile, setLoadingProfile] = useState<boolean>(false);
   const id = searchParams.get("id");
+  const { status } = useSession();
 
   const handleEdit = (id: string) => {
     router.push(`/update-prompt?id=${id}`);
@@ -76,6 +77,8 @@ const Profile = () => {
       }
     }
   }, [session, id]);
+
+  if (status === "unauthenticated" || status === "loading") return <></>;
 
   return (
     <UserProfile

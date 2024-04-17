@@ -2,6 +2,7 @@
 import Form from "@/components/Form";
 import { fetchPrompt, updatePrompt } from "@/utils/serverActions";
 import { Post } from "@/utils/types";
+import { Session } from "inspector";
 import { useSession } from "next-auth/react";
 import { revalidatePath } from "next/cache";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -37,7 +38,9 @@ const UpdatePrompt = () => {
     try {
       const response = await updatePrompt(promptId!, post);
       if (!response.error) {
-        router.push("/profile");
+        router.push(
+          `/profile?id=${session?.user!["id" as keyof typeof session.user]}`
+        );
       } else {
         console.error(response.message);
       }

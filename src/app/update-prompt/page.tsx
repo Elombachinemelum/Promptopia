@@ -6,7 +6,7 @@ import { Session } from "inspector";
 import { useSession } from "next-auth/react";
 import { revalidatePath } from "next/cache";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, Suspense, useEffect, useState } from "react";
 
 const UpdatePrompt = () => {
   const [post, setPost] = useState<Post>({
@@ -50,16 +50,26 @@ const UpdatePrompt = () => {
       setSubmitting(false);
     }
   };
-  if (status === "unauthenticated" || status === "loading") return <></>;
+
   return (
-    <Form
-      type="Edit"
-      post={post}
-      setPost={setPost}
-      submitting={submitting}
-      setSubmitting={setSubmitting}
-      handleSubmit={handleSubmit}
-    />
+    <Suspense
+      fallback={
+        <p className="desc text-center !mt-7">Loading Promp Details...</p>
+      }
+    >
+      {status === "unauthenticated" || status === "loading" ? (
+        <></>
+      ) : (
+        <Form
+          type="Edit"
+          post={post}
+          setPost={setPost}
+          submitting={submitting}
+          setSubmitting={setSubmitting}
+          handleSubmit={handleSubmit}
+        />
+      )}
+    </Suspense>
   );
 };
 
